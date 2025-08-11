@@ -16,18 +16,29 @@ dotenv.config();
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
 
-// Dynamic CORS origin for production
-const allowedOrigins = process.env.NODE_ENV === "production" 
-  ? [process.env.FRONTEND_URL || "https://your-app-name.onrender.com"]
-  : ["http://localhost:5173"];
+// Debug logging
+console.log("Environment variables loaded:");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("PORT:", process.env.PORT);
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 
 app.use(express.json());
 app.use(cookieParser());
+
+// CORS configuration
 app.use(
   cors({
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
+      
+      const allowedOrigins = process.env.NODE_ENV === "production" 
+        ? [process.env.FRONTEND_URL || "https://your-app-name.onrender.com"]
+        : ["http://localhost:5173"];
+      
+      console.log("CORS check - Origin:", origin);
+      console.log("CORS check - Allowed origins:", allowedOrigins);
+      
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
