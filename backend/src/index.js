@@ -25,16 +25,20 @@ console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS configuration
+// CORS configuration - more permissive for production
 app.use(
   cors({
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       
-      const allowedOrigins = process.env.NODE_ENV === "production" 
-        ? [process.env.FRONTEND_URL || "https://your-app-name.onrender.com"]
-        : ["http://localhost:5173"];
+      // In production, allow any origin for now (you can restrict this later)
+      if (process.env.NODE_ENV === "production") {
+        return callback(null, true);
+      }
+      
+      // In development, only allow localhost
+      const allowedOrigins = ["http://localhost:5173"];
       
       console.log("CORS check - Origin:", origin);
       console.log("CORS check - Allowed origins:", allowedOrigins);

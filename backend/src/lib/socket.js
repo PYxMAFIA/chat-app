@@ -18,9 +18,13 @@ const io = new Server(server, {
       // Allow requests with no origin
       if (!origin) return callback(null, true);
       
-      const allowedOrigins = process.env.NODE_ENV === "production" 
-        ? [process.env.FRONTEND_URL || "https://your-app-name.onrender.com"]
-        : ["http://localhost:5173"];
+      // In production, allow any origin for now
+      if (process.env.NODE_ENV === "production") {
+        return callback(null, true);
+      }
+      
+      // In development, only allow localhost
+      const allowedOrigins = ["http://localhost:5173"];
       
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
